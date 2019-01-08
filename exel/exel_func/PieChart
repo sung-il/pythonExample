@@ -1,0 +1,69 @@
+Option Explicit
+
+Private Sub CommandButton1_Click()
+    createPieChart
+End Sub
+
+Sub createPieChart()
+
+    Dim src As Worksheet
+    Set src = Worksheets("sheet5")      ' DATA ON SHEET1.
+    
+    Dim oChart As ChartObject           ' CREATE A CHART OBJECT.
+    
+    For Each oChart In src.ChartObjects
+        ' DELETE PREVIOUS CHARTS (IF ANY). WE'LL CREATE NEW CHARTS FOR EVERY BUTTON CLICK.
+        oChart.Delete
+    Next
+    
+    ' AN ARRAY OF COLUMNS WITH DATA FOR THE CHARTS.
+    Dim aRng() As String
+    ReDim aRng(1 To 4)
+    
+    aRng(1) = "B2"
+    aRng(2) = "C2"
+    aRng(3) = "D2"
+    
+    ReDim bRng(1 To 4)
+    
+    bRng(1) = "B7"
+    bRng(2) = "C7"
+    bRng(3) = "D7"
+
+    Dim pieChart As New Chart
+    Dim oSeries As Series       ' THE SERIES OBJECT REPRESENTS A SERIES IN A CHART.
+    
+    Dim i As Integer
+    Dim ileft  As Integer
+    ileft = 10          ' THE INITIAL LOCATION.
+    
+    For i = LBound(aRng) To UBound(aRng) - 1
+        
+        ' CREATE THE CHART.
+        Set pieChart = src.ChartObjects.Add(Width:=400, Height:=400, _
+            Top:=170, Left:=ileft).Chart
+        
+        With pieChart
+            .ChartType = xlPie          ' CHOOSE THE TYPE OF CHART.
+            .HasTitle = True
+            
+            ' USE COLUMN NAMES FOR CHART TITLE.
+            .ChartTitle.Text = src.UsedRange.Rows.Cells(1, i + 1)
+        
+            Set oSeries = .SeriesCollection.NewSeries       ' NEW SERIES FOR A NEW CHART.
+            With oSeries
+                .XValues = src.Range(src.Range("A2"), src.Range("A2").End(xlDown))
+                .Values = src.Range(src.Range(aRng(i)), src.Range(bRng(i)))
+            End With
+            
+            ' ADD DATA LABELS TO EACH SERIES.
+            .SeriesCollection(1).HasDataLabels = True
+        End With
+        
+        ' SET NEW LOCATION FOR THE NEW CHART (CALCULATED BASED OF CHART WIDTH).
+        ileft = ileft + 400
+    Next i
+End Sub
+
+
+
