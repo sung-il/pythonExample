@@ -2,7 +2,7 @@
 from openpyxl import load_workbook
  
 wb = load_workbook('score.xlsx')
- 
+
 ws = wb.active
 # ws = wb.get_sheet_by_name("Sheet1")
 
