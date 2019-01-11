@@ -6,7 +6,7 @@ import requests, bs4
 def main():
     resp = requests.get('http://finance.naver.com/')
     resp.raise_for_status() # Response 에러 시 프로그램 중단
-    
+    print(resp.encoding)
     resp.encoding='euc-kr'
     html = resp.text
     #print(html)
